@@ -1,25 +1,24 @@
 // QAQ Reborn Date : 8/5/2022
 
-const { fs } = require('node:fs');
-const { path } = require('node:path');
+const  fs = require('node:fs');
+const path = require('node:path');
 const { Client , Collection   } = require('discord.js');
 const { PREFIX } = require('./config.json')
 // TOKEN PLACEMENT
 require("dotenv").config();
 
 const client = new Client({ intents: 3276799 });
-const LaunchTimeStamp = Date.now();
+
 client.commands = new Collection();
-const commandsPath = path.join(_dirname, 'X-Commands');
-const commandsFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-for (const commandFile of commandsFiles ) {
-    const
+const completeCommandsPath = path.join(__dirname, 'X-Commands')
+const commandFiles = fs.readdirSync(completeCommandsPath).filter(file => file.endsWith('.js'));
+for (const commandFile of commandFiles ) {
+    const completeFilePath = path.join(completeCommandsPath, commandFile);
+    const command = require(completeFilePath)
+
+    client.commands.set(command.data.name, command);
 }
 
-client.once('ready', () => {
-    console.log('Ready Mother Fucker');
-    console.log(LaunchTimeStamp);
-});
 
 client.login(process.env.DISCORD_TOKEN)
     .catch((err) => console.log(err))
@@ -42,15 +41,12 @@ client.on("messageCreate", async (message) => {
 client.on('interactionCreate', async interaction => {
    if (!interaction.isChatInputCommand())
        return;
-   const { commandName } = interaction;
-   if (commandName === 'ping') {
-       await interaction.reply('FUCK YOU');
-   } else if ( commandName === 'server') {
-       await interaction.reply(`Server Name: ${interaction.guild.name}\n
-       Total members: ${interaction.guild.memberCount}\n
-       Guild icon : ${interaction.guild.icon}\n
-       Guild ??? : ${interaction.guild.voiceStates}`)
-   } else if (commandName === 'user') {
-       await interaction.reply(`Your tag: ${interaction.user.tag}\nYour id: ${interaction.user.id}`);
+   const command = client.commands.get(interaction.commandName);
+   if (!command) return;
+   try {
+       await command.execute(interaction);
+   }catch (e) {
+       console.error(e);
+       await interaction.reply({content : e})
    }
 });

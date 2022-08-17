@@ -1,16 +1,22 @@
-
-const {SlashCommandBuilder, Routes} = require('discord.js');
-const {REST} = require ('@discordjs/rest');
 require("dotenv").config();
+const fs = require ('node:fs');
+const path = require('node:path');
+const { Routes} = require('discord.js');
+const {REST} = require ('@discordjs/rest');
+
 const { clientId , guildId } = require('./config.json')
 const {DISCORD_TOKEN} = process.env
 
-const commands = [
-    new SlashCommandBuilder().setName('ping').setDescription('Check Latency Lah ABURAN'),
-    new SlashCommandBuilder().setName('server').setDescription('check server info lah'),
-    new SlashCommandBuilder().setName('user').setDescription('check USER LAH JIBAI'),
-]
-    .map(command => command.toJSON());
+const commands= [];
+const completeCommandsPath = path.join(__dirname, 'X-Commands')
+const commandFiles = fs.readdirSync(completeCommandsPath).filter(file => file.endsWith('.js'));
+
+for (const commandfile of commandFiles) {
+    const completeFilePath = path.join(completeCommandsPath, commandfile);
+    const command = require(completeFilePath);
+    commands.push(command.data.toJSON());
+}
+
 
 const rest = new REST ({ version: '10' }).setToken(DISCORD_TOKEN);
 

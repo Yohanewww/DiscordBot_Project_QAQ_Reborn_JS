@@ -19,6 +19,17 @@ for (const commandFile of commandFiles ) {
     client.commands.set(command.data.name, command);
 }
 
+const eventsPath = path.join(__dirname, "X-events");
+const eventsFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"));
+for (const eventsFile of eventsFiles) {
+    const eventsFilePath = path.join(eventsPath, eventsFile);
+    const event = require(eventsFilePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+    }else {
+        client.on(event.name, (...args) => event.execute(args));
+    }
+}
 
 client.login(process.env.DISCORD_TOKEN)
     .catch((err) => console.log(err))
@@ -42,9 +53,11 @@ client.on('interactionCreate', async interaction => {
    if (!interaction.isChatInputCommand())
        return;
    const command = client.commands.get(interaction.commandName);
+
    if (!command) return;
    try {
-       await command.execute(interaction);
+       await command.execute(client, interaction)
+       // console.log(interaction);
    }catch (e) {
        console.error(e);
        await interaction.reply({content : e})

@@ -3,7 +3,7 @@
 const  fs = require('node:fs');
 const path = require('node:path');
 const { Client , Collection   } = require('discord.js');
-const { PREFIX } = require('./config.json')
+// const { PREFIX } = require('./config.json')
 // TOKEN PLACEMENT
 require("dotenv").config();
 
@@ -41,22 +41,27 @@ client.login(process.env.DISCORD_TOKEN)
 // });
 
 client.on("messageCreate", async (message) => {
-    if (!message.author.bot) {
-        if(message.content.startsWith(PREFIX)) {
-             console.log(message.content)
-        }
+    if (message.content === "listemojis") {
+        const emojiList = message.guild.emojis.map((e, x) => (x + ' = ' + e) + ' | ' +e.name).join('\n');
+        console.log(emojiList)
     }
+    // if (!message.author.bot) {
+    //     if(message.content.startsWith(PREFIX)) {
+    //          console.log(message.content)
+    //     }
+    // }
 
 })
 
 client.on('interactionCreate', async interaction => {
+    const message = client.message
    if (!interaction.isChatInputCommand())
        return;
    const command = client.commands.get(interaction.commandName);
 
    if (!command) return;
    try {
-       await command.execute(client, interaction)
+       await command.execute(client, interaction,message )
        // console.log(interaction);
    }catch (e) {
        console.error(e);

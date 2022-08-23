@@ -6,7 +6,7 @@
 
 >:) 
 
-### 目前的規劃 QAQ
+### QAQ Future Plan
 - [x] 移植到js
 - [x] Database on emoji
 - [ ] 新增對管理員有用的小功能

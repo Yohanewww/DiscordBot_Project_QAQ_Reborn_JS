@@ -44,10 +44,11 @@ client.login(process.env.DISCORD_TOKEN)
 
 client.on("messageCreate", async (message) => {
     if(message.content.startsWith(PREFIX) && !message.author.bot) {
-
         const db = new sqlite3.Database("./lib/Sqlite/X-SQLite.db")
         let emojidata = (`SELECT Emoji_Name, Emoji_Identifier  FROM ANIMATEDEMOJI WHERE AnimatedBoolean = 1`)
-        db.all(emojidata, [],  (err, rows) => {
+        const interationUser = await message.guild.members.fetch(message.author.id);
+        console.log(interationUser)
+        db.all(emojidata, [],   (err, rows) => {
             var emojisName = [];
             var emojiname = "";
             var emojiidentifier = "";
@@ -64,15 +65,13 @@ client.on("messageCreate", async (message) => {
                 },
             )
             // console.log(emoji_Collection)
-            var message_Content = message.content.slice(PREFIX.length).split(/ +/)
-            var FirstContent = message_Content.shift().toLowerCase();
-
-            if (emojisName.includes(FirstContent)) {
-                const channel =  message.guild.channels.fetch("1008712833602699285");
-                console.log(channel)
-                var X_emoji = emoji_Collection.get(FirstContent)
-                message.reply("<" + X_emoji + ">")
-
+            var message_Content = message.content.slice(PREFIX.length)
+            // var FirstContent = message_Content.shift().toLowerCase();
+            if (emojisName.includes(message_Content)) {
+                const channel = client.channels.cache.get(message.channelId);
+                var X_emoji = emoji_Collection.get(message_Content)
+                channel.send({content : `**${interationUser.displayName}**表示`})
+                channel.send("<" + X_emoji + ">")
             }
 
         })

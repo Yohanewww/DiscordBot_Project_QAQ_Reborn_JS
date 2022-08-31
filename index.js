@@ -7,6 +7,7 @@ const { Client , Collection   } = require('discord.js');
 const { PREFIX } = require('./config.json')
 // TOKEN PLACEMENT
 require("dotenv").config();
+const sqlite3 = require('sqlite3')
 
 const client = new Client({ intents: 3276799 });
 
@@ -42,11 +43,39 @@ client.login(process.env.DISCORD_TOKEN)
 // });
 
 client.on("messageCreate", async (message) => {
+    if(message.content.startsWith(PREFIX) && !message.author.bot) {
 
-    if (!message.author.bot) {
-        if(message.content.startsWith(PREFIX)) {
-             console.log(message.content)
-        }
+        const db = new sqlite3.Database("./lib/Sqlite/X-SQLite.db")
+        let emojidata = (`SELECT Emoji_Name, Emoji_Identifier  FROM ANIMATEDEMOJI WHERE AnimatedBoolean = 1`)
+        db.all(emojidata, [],  (err, rows) => {
+            var emojisName = [];
+            var emojiname = "";
+            var emojiidentifier = "";
+            var emoji_Collection = new Collection;
+            if (err) {
+                throw err;
+            }
+            rows.forEach(function fuck(row) {
+                    // console.log(row.Emoji_Name)
+                    emoji_Collection.set(emojiname, emojiidentifier)
+                    emojiidentifier = row.Emoji_Identifier
+                    emojiname = row.Emoji_Name
+                    emojisName.push(emojiname)
+                },
+            )
+            // console.log(emoji_Collection)
+            var message_Content = message.content.slice(PREFIX.length).split(/ +/)
+            var FirstContent = message_Content.shift().toLowerCase();
+
+            if (emojisName.includes(FirstContent)) {
+                const channel =  message.guild.channels.fetch("1008712833602699285");
+                console.log(channel)
+                var X_emoji = emoji_Collection.get(FirstContent)
+                message.reply("<" + X_emoji + ">")
+
+            }
+
+        })
     }
 
 })
@@ -62,6 +91,7 @@ client.on('interactionCreate', async interaction => {
        }catch (e) {
            console.error(e);
            await interaction.reply({content : e});
+
        }
    } else if (interaction.type == InteractionType.ApplicationCommandAutocomplete) {
        const command = client.commands.get(interaction.commandName);

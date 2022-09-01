@@ -16,3 +16,5 @@
 - [ ] Revive Hydra の 計劃
 - [ ] 新增sticker
 - [ ] 完善Error Handling
+- [ ] Poll System
+- [ ] Bot speak text feature

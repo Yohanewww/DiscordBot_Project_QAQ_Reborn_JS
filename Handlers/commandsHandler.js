@@ -9,7 +9,6 @@ module.exports = (client) => {
     for (const commandFile of commandFiles ) {
         const completeFilePath = path.join(completeCommandsPath, commandFile);
         const command = require(completeFilePath)
-
         client.commands.set(command.data.name, command);
     }
 

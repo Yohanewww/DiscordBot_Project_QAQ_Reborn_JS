@@ -6,9 +6,10 @@ module.exports = {
     name : "messageCreate",
     async execute(message, client )  {
     if(message.content.startsWith(PREFIX) && !message.author.bot) {
+        const interationUser = await message.guild.members.fetch(message.author.id);
         const db = new sqlite3.Database("./lib/Sqlite/X-SQLite.db")
         let emojidata = (`SELECT Emoji_Name, Emoji_Identifier  FROM ANIMATEDEMOJI WHERE AnimatedBoolean = 1`)
-        const interationUser = await message.guild.members.fetch(message.author.id);
+        /* Database */
         db.all(emojidata, [],   (err, rows) => {
             let emojisName = [];
             let emoji_Collection = new Collection;
@@ -26,9 +27,9 @@ module.exports = {
             // var FirstContent = message_Content.shift().toLowerCase();
             if (emojisName.includes(message_Content)) {
                 const channel = client.channels.cache.get(message.channelId);
-                let X_emoji = emoji_Collection.get(message_Content)
+                let Animoji = emoji_Collection.get(message_Content)
                 channel.send({content : `**${interationUser.displayName}**表示`})
-                channel.send("<" + X_emoji + ">")
+                channel.send("<" + Animoji + ">")
             }
         })
     }

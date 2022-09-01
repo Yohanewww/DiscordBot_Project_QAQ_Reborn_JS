@@ -20,7 +20,17 @@ client.login(process.env.DISCORD_TOKEN)
     require(`./Handlers/${handler}`)(client, Client);
 });
 
-//client.commands.get("x").execute(message, args);
+
+client.on("messageCreate", async (message) => {
+    if(message.content.startsWith(PREFIX) && !message.author.bot) {
+        console.log(message.content)
+        if(message.content.slice(PREFIX.length) === "ae") {
+            client.commands.get("ae").execute(message, message.content);
+        }
+
+    }
+
+})
 
 client.on('interactionCreate', async interaction => {
    if (interaction.isChatInputCommand()) {

@@ -21,7 +21,6 @@ module.exports = {
     async autocomplete(client, interaction) {
         const db = new sqlite3.Database("./lib/Sqlite/X-SQLite.db")
 
-
         let emojidata = (`SELECT Emoji_Name, Emoji_Identifier FROM ANIMATEDEMOJI`)
         db.all(emojidata, [], (err, rows) => {
             if(err) {
@@ -49,7 +48,6 @@ module.exports = {
         // console.log(emoji_Collection)
         // console.log(x)
 
-
         if (interaction.commandName === 'animoji-ヽowoノ') {
             const focusedValue = interaction.options.getFocused();
             // const choices = ['red', 'install', 'collection', 'promise', 'debug'];
@@ -58,7 +56,6 @@ module.exports = {
                 filtered.map(x => ({ name: x, value: x })),
             );
         }
-
     },
 
     async execute(Client, interaction){

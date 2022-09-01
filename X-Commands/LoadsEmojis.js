@@ -1,5 +1,4 @@
 const {SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-
 const sqlite3 = require('sqlite3')
 
 module.exports = {
@@ -7,10 +6,15 @@ module.exports = {
         .setName("update-emoji")
         .setDescription("Renew & Loads all the Emoji into Database")
         .setDefaultMemberPermissions(0),
+    /*
+    * @param {client} client
+    *  @param {interaction} interaction
+    */
 
     async execute(client, interaction) {
         let EmojiCounter = 0
         let emojiNames = client.emojis.cache
+        //Database
         const db = new sqlite3.Database("./lib/Sqlite/X-SQLite.db")
         db.run(`DELETE FROM ANIMATEDEMOJI`)
         emojiNames.forEach(function(addEmojiDatabase){
@@ -21,6 +25,8 @@ module.exports = {
         )
         // console.log(emojiNames)
         console.log("Animoji Database Updated")
+
+        /* Embed Message */
         const interationUser = await interaction.guild.members.fetch(interaction.user.id);
         const InteractionFinalReply = new EmbedBuilder()
             .setColor(0x0099FF)
@@ -29,7 +35,5 @@ module.exports = {
             .setTimestamp()
             .setFooter({text: interationUser.user.username, iconURL:interationUser.user.avatarURL()})
        await interaction.reply({embeds: [InteractionFinalReply]})
-
-
     },
 }

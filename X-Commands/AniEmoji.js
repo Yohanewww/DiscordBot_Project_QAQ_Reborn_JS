@@ -21,7 +21,7 @@ module.exports = {
                     emojisName.push(emojiname)
                 },
             )
-            console.log(emojisName)
+            // console.log(emojisName)
             message.channel.send(emojisName.toString())
         })
 

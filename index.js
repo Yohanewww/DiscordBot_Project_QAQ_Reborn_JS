@@ -5,9 +5,11 @@ const { PREFIX } = require('./config.json')
 // TOKEN PLACEMENT
 require("dotenv").config();
 const sqlite3 = require('sqlite3')
-
 const client = new Client({ intents: 3276799 });
 
+var pathToFfmpeg = require('ffmpeg-static');
+const { createAudioPlayer } = require('@discordjs/voice');
+const player = createAudioPlayer();
 
 
 
